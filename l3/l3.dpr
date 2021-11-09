@@ -7,7 +7,6 @@ program l3;
 uses
   System.SysUtils;
 
-type
 
 
 

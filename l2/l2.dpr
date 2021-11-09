@@ -721,6 +721,52 @@ procedure writeTable;
       writeln;
   end;
 
+function compByPage(const adr1, adr2: tAdr): boolean;    //true, adr1<=adr2
+  begin
+    if adr1^.Pages^.Next=nil then RESULT:=true
+      else if adr2^.Pages^.Next = nil then RESULT:=false
+        else if (adr1^.Pages^.Next^.field<=adr2^.Pages^.Next^.field) then RESULT:=true
+          else RESULT:=false;
+  end;
+
+procedure sortPages(const HEAD: tAdr);
+  var
+    cur, tmp, max: tAdr;
+  begin
+    cur:=HEAD;
+    if cur^.Next<>nil then
+      if cur^.Next^.Next<>nil then
+      while cur^.Next^.Next<>nil do
+        begin
+
+          tmp:=cur^.Next;
+          max:=cur;
+          while tmp^.Next<>nil do
+            begin
+              //if tmp^.Next^.field.term<=max^.Next^.field.Term then
+              //    max:=tmp;
+              if compByPage(tmp^.Next, max^.Next) then
+                max:=tmp;
+              tmp:=tmp^.Next;
+            end;
+          swap(cur^.Next, max^.Next);
+          cur:=cur^.Next;
+
+        end;
+    cur:=HEAD;
+    while cur^.Next<>nil do
+      begin
+        cur:=cur^.Next;
+        sortPages(cur^.subTerms);
+      end;
+  end;
+
+procedure uiSortPages;
+  begin
+    sortPages(Head);
+    Done;
+  end;
+
 procedure UI;
   var
     isCont: boolean;
@@ -737,11 +783,12 @@ procedure UI;
         writeln('   1 to view index');
         writeln('   2 to add new term');
         writeln('   3 to select item and delete it or change (and adding subterms)');
-        writeln('   4 to sort index');
+        writeln('   4 to sort index by terms');
         writeln('   5 to find elements');
         writeln('   6 to read index from file');
         writeln('   7 to write index to file');
         writeln('   8 to exit');
+        writeln('   9 to sort index by first pages');
         write('> ');
         str:='';
         readln(str);
@@ -766,6 +813,7 @@ procedure UI;
                     writeln('Press any key..');
                     readln;
                   end;
+                9: uiSortPages;
                 else writeln('Incorrect input!');
               end;
             end;
