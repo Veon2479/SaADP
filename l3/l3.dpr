@@ -5,17 +5,12 @@ program l3;
 {$R *.res}
 
 uses
-  System.SysUtils;
-
-type
-  tAr = array[1..12] of integer;
-  tUser = 1..8;
-  tTime = 1..10;
-  tPrior = set of tUser;
+  System.SysUtils,
+  Queue in 'Queue.pas';
 
 var
   CurUser: tUser;
-  users: array[tUser] of tAr=((3, 2, 1, 6, 3, 2, 5, 4, 0, 0, 0, 0),
+  users: array[1..8] of tAr=((3, 2, 1, 6, 3, 2, 5, 4, 0, 0, 0, 0),
                               (2, 1, 2, 3, 3, 1, 2, 6, 4, 0, 0, 0),
                               (4, 1, 6, 8, 5, 4, 2, 3, 1, 2, 0, 0),
                               (2, 4, 8, 9, 3, 2, 1, 6, 5, 9, 0, 0),
@@ -24,8 +19,10 @@ var
                               (3, 2, 3, 1, 3, 4, 1, 2, 1, 6, 1, 2),
                               (2, 3, 3, 3, 1, 6, 3, 8, 4, 2, 2, 2));
 
-  prior: array[1..3] of tPrior = ([1, 2, 3], [4, 5], [6, 7, 8]);
+
   tact, proc: tTime;
+  graph: array[1..8, 1..1000] of integer;
+
 
 function getTime: tTime;
   var
@@ -45,7 +42,15 @@ function isEmpty: boolean;
   var
     i, j: integer;
   begin
-    for i:=
+    RESULT:=true;
+    for i := 1 to 8 do
+      for j := 1 to 12 do
+        if users[i, j]<>0 then RESULT:=false;
+  end;
+
+function getUserTime(const USER: tUser): integer;
+  begin
+    RESULT:=active[USER];
   end;
 
 begin
