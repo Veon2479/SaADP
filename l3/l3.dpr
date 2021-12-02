@@ -136,6 +136,10 @@ var
     end;
 
 
+var
+  i: integer;
+
+
 begin
   writeln('Enter tact time and processing time:');
   sum:=getTaskSum;
@@ -171,9 +175,23 @@ begin
       decBusy(tact);
     end;
   normalize(curTime);
-  saveGraph(curTime);
+
   validate(curTime);
+
+
+  i:=0;
+ { for curUser := 1 to 8 do
+    if graph[curUser, curTime]<>0 then inc(i);
+  if i<>0 then dec(curTime);  }
+  if proc = 0 then dec(curTime, tact);
+  if (proc = 0) and (tact = 1) then dec(curTime, 1);
+
   eff:=sum/curTime;
+    saveGraph(curTime);
+
+
+
+
   writeln('all time is: ',curTime);
   writeln('sum of time of tasks: ',sum);
   writeln('ÊÏÄ = ',eff:6:4);
